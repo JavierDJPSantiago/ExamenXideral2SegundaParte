@@ -26,16 +26,16 @@ public class EscuelaDbUtil {
 				ResultSet myRs = myStmt.executeQuery("select * from escuela order by tescuela")){
 			while (myRs.next()) {
 				
-				// retrieve data from result set row
+				// recuperar datos de la fila
 				int id = myRs.getInt("id");
 				String nombre = myRs.getString("nombre");
 				String tescuela = myRs.getString("tescuela");
 				String correo = myRs.getString("correo");
 				
-				// create new escuela object
+				// crea un nuevo objeto escuela
 				Escuela tempEscuela = new Escuela(id, nombre, tescuela, correo);
 				
-				// add it to the list of escuela
+				// agregarlo a la lista de escuela
 				listaDeEscuela.add(tempEscuela);				
 			}
 			
@@ -56,7 +56,7 @@ public class EscuelaDbUtil {
 			}
 			
 			if (myConn != null) {
-				myConn.close();   // doesn't really close it ... just puts back in connection pool
+				myConn.close();  // realmente no lo cierra... simplemente lo vuelve a colocar en el grupo de conexiones
 			}
 		}
 		catch (Exception exc) {
@@ -66,32 +66,27 @@ public class EscuelaDbUtil {
 
 	public void addEscuela(Escuela theEscuela) throws Exception {
 
-		Connection myConn = null;
-		PreparedStatement myStmt = null;
 		
-		try {
-			// get db connection
-			myConn = dataSource.getConnection();
+		
+		
+		try (
+			// obtener conexión db
+			Connection myConn = dataSource.getConnection();
 			
-			// create sql for insert
-			String sql = "insert into escuela "
+			// sql para insertar
+			PreparedStatement myStmt = myConn.prepareStatement("insert into escuela "
 					   + "(nombre, tescuela, correo) "
-					   + "values (?, ?, ?)";
-			
-			myStmt = myConn.prepareStatement(sql);
-			
-			// set the param values for the escuela
+					   + "values (?, ?, ?)");
+			){
+			// establecer los valores de parámetro para la escuela
 			myStmt.setString(1, theEscuela.getNombre());
 			myStmt.setString(2, theEscuela.getTescuela());
 			myStmt.setString(3, theEscuela.getCorreo());
 			
-			// execute sql insert
+			// ejecutar insertar sql
 			myStmt.execute();
 		}
-		finally {
-			// clean up JDBC objects
-			close(myConn, myStmt, null);
-		}
+		
 	}
 
 	public Escuela getEscuela(String theEscuelaId) throws Exception {
@@ -104,31 +99,31 @@ public class EscuelaDbUtil {
 		int escuelaId;
 		
 		try {
-			// convert escuela id to int
+			// convertir id de la escuela a int
 			escuelaId = Integer.parseInt(theEscuelaId);
 			
-			// get connection to database
+			// obtener conexión a la base de datos
 			myConn = dataSource.getConnection();
 			
-			// create sql to get selected escuela
+			// crear sql para obtener la escuela seleccionada
 			String sql = "select * from escuela where id=?";
 			
-			// create prepared statement
+			// crear declaración preparada
 			myStmt = myConn.prepareStatement(sql);
 			
-			// set params
+			// establecer parámetros
 			myStmt.setInt(1, escuelaId);
 			
-			// execute statement
+			// ejecutar declaración
 			myRs = myStmt.executeQuery();
 			
-			// retrieve data from result set row
+			// // recuperar datos de la fila del conjunto de resultados
 			if (myRs.next()) {
 				String nombre = myRs.getString("nombre");
 				String tescuela = myRs.getString("tescuela");
 				String correo = myRs.getString("correo");
 				
-				// use the EscuelaId during construction
+				// usar EscuelaId durante la construcción
 				theEscuela = new Escuela(escuelaId, nombre, tescuela, correo);
 			}
 			else {
@@ -138,41 +133,34 @@ public class EscuelaDbUtil {
 			return theEscuela;
 		}
 		finally {
-			// clean up JDBC objects
+			// limpiar objetos JDBC
 			close(myConn, myStmt, myRs);
 		}
 	}
 
 	public void updateEscuela(Escuela theEscuela) throws Exception {
 		
-		Connection myConn = null;
-		PreparedStatement myStmt = null;
+		
 
-		try {
-			// get db connection
-			myConn = dataSource.getConnection();
+		try (
+				// obtener conexión db
+			Connection myConn = dataSource.getConnection();
 			
-			// create SQL update statement
-			String sql = "update escuela "
-						+ "set nombre=?, tescuela=?, correo=? "
-						+ "where id=?";
-			
-			// prepare statement
-			myStmt = myConn.prepareStatement(sql);
-			
-			// set params
+			// preparar declaración
+			PreparedStatement myStmt = myConn.prepareStatement("update escuela "
+					+ "set nombre=?, tescuela=?, correo=? "
+					+ "where id=?");
+				) {
+			// establecer parámetros
 			myStmt.setString(1, theEscuela.getNombre());
 			myStmt.setString(2, theEscuela.getTescuela());
 			myStmt.setString(3, theEscuela.getCorreo());
 			myStmt.setInt(4, theEscuela.getId());
 			
-			// execute SQL statement
+			// ejecutar sentencia SQL
 			myStmt.execute();
 		}
-		finally {
-			// clean up JDBC objects
-			close(myConn, myStmt, null);
-		}
+		
 	}
 
 	public void deleteEscuela(String theEscuelaId) throws Exception {
@@ -181,26 +169,26 @@ public class EscuelaDbUtil {
 		PreparedStatement myStmt = null;
 		
 		try {
-			// convert student id to int
+			// convertir id de estudiante a int
 			int escuelaId = Integer.parseInt(theEscuelaId);
 			
-			// get connection to database
+			// obtener conexión a la base de datos
 			myConn = dataSource.getConnection();
 			
-			// create sql to delete student
+			// crear sql para eliminar estudiante
 			String sql = "delete from escuela where id=?";
 			
-			// prepare statement
+			// preparar declaración
 			myStmt = myConn.prepareStatement(sql);
 			
-			// set params
+			// establecer parámetros
 			myStmt.setInt(1, escuelaId);
 			
-			// execute sql statement
+			// ejecutar sentencia sql
 			myStmt.execute();
 		}
 		finally {
-			// clean up JDBC code
+			// limpia el código JDBC
 			close(myConn, myStmt, null);
 		}	
 	}

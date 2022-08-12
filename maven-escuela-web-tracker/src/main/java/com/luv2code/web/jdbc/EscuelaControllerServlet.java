@@ -25,7 +25,7 @@ public class EscuelaControllerServlet extends HttpServlet {
 	public void init() throws ServletException {
 		super.init();
 		
-		// create our escuela db util ... and pass in the conn pool / datasource
+		// crea nuestra escuela db util... y pasa en el conn pool/datasource
 		try {
 			escuelaDbUtil = new EscuelaDbUtil(dataSource);
 		}
@@ -37,15 +37,14 @@ public class EscuelaControllerServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		try {
-			// read the "command" parameter
+			// leer el parámetro "comando"
 			String theCommand = request.getParameter("command");
-			System.out.println(theCommand);
-			// if the command is missing, then default to listing escuela
+			// si falta el comando, se muestra de forma predeterminada escuela
 			if (theCommand == null) {
 				theCommand = "LIST";
 			}
 			
-			// route to the appropriate method
+			// ruta al método apropiado
 			switch (theCommand) {
 			
 			case "LIST":
@@ -82,32 +81,32 @@ public class EscuelaControllerServlet extends HttpServlet {
 	private void deleteEscuela(HttpServletRequest request, HttpServletResponse response)
 		throws Exception {
 
-		// read escuela id from form data
+		// leer id de la escuela de los datos del formulario
 		String theEscuelaId = request.getParameter("escuelaId");
 		
 		// delete escuela from database
 		escuelaDbUtil.deleteEscuela(theEscuelaId);
 		
-		// send them back to "list escuela" page
+		// eliminar escuela de la base de datos
 		listEscuela(request, response);
 	}
 
 	private void updateEscuela(HttpServletRequest request, HttpServletResponse response)
 		throws Exception {
 
-		// read escuela info from form data
+		// leer la información de la escuela de los datos del formulario
 		int id = Integer.parseInt(request.getParameter("escuelaId"));
 		String nombre = request.getParameter("nombre");
 		String tescuela = request.getParameter("tescuela");
 		String correo = request.getParameter("correo");
 		
-		// create a new escuela object
+		// crea un nuevo objeto escuela
 		Escuela theEscuela = new Escuela(id, nombre, tescuela, correo);
 		
-		// perform update on database
+		// realizar la actualización en la base de datos
 		escuelaDbUtil.updateEscuela(theEscuela);
 		
-		// send them back to the "list escuela" page
+		// enviarlos de vuelta a la pagina "list escuela"
 		listEscuela(request, response);
 		
 	}
@@ -115,16 +114,16 @@ public class EscuelaControllerServlet extends HttpServlet {
 	private void loadEscuela(HttpServletRequest request, HttpServletResponse response) 
 		throws Exception {
 
-		// read escuela id from form data
+		// lee la identificación de la escuela de los datos del formulario
 		String theEscuelaId = request.getParameter("escuelaId");
 		
-		// get escuela from database (db util)
+		// obtener escuela de la base de datos (db util)
 		Escuela theEscuela = escuelaDbUtil.getEscuela(theEscuelaId);
 		
-		// place escuela in the request attribute
+		// colocar escuela en el atributo de solicitud
 		request.setAttribute("THE_ESCUELA", theEscuela);
 		
-		// send to jsp page: update-student-form.jsp
+		// enviar a la página jsp: update-student-form.jsp
 		RequestDispatcher dispatcher = 
 				request.getRequestDispatcher("/update-escuela-form.jsp");
 		dispatcher.forward(request, response);		
@@ -132,31 +131,30 @@ public class EscuelaControllerServlet extends HttpServlet {
 
 	private void addEscuela(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-		// read escuela info from form data
+		// lee la información de la escuela de los datos del formulario
 		String nombre = request.getParameter("nombre");
 		String tescuela = request.getParameter("tescuela");
 		String correo = request.getParameter("correo");		
 		
-		// create a new escuela object
+		// crea un nuevo objeto escuela
 		Escuela theEscuela = new Escuela(nombre, tescuela, correo);
 		
-		// add the escuela to the database
+		// agregar la escuela a la base de datos
 		escuelaDbUtil.addEscuela(theEscuela);
 				
-		// send back to main page (the escuela list)
+		// enviar de vuelta a la página principal (la lista de escuelas)
 		listEscuela(request, response);
 	}
 
 	private void listEscuela(HttpServletRequest request, HttpServletResponse response) 
 		throws Exception {
-		System.out.println("Entro al metodo listEscuela");
-		// get escuela from db util
+		// obtener escuela de db util
 		List<Escuela> escuela = escuelaDbUtil.getEscuela();
 		
-		// add escuela to the request
+		// agregar escuela a la solicitud
 		request.setAttribute("ESCUELA_LIST", escuela);
 				
-		// send to JSP page (view)
+		// enviar a la página JSP (ver)
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/list-escuela.jsp");
 		dispatcher.forward(request, response);
 	}

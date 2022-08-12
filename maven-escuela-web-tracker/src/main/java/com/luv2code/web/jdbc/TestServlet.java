@@ -15,42 +15,30 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 /**
- * Servlet implementation class TestServlet
+ * Clase de implementación de servlet TestServlet
  */
 @WebServlet("/TestServlet")
 public class TestServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	// Define datasource/connection pool for Resource Injection
+	// Definir fuente de datos/grupo de conexiones para inyección de recursos
 	@Resource(name="jdbc/web_student_tracker")
 	private DataSource dataSource;
 	
 	
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
+
+    /**
+    * @see HttpServlet#doGet(solicitud HttpServletRequest, respuesta HttpServletResponse)
+    */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		// Step 1:  Set up the printwriter
 		PrintWriter out = response.getWriter();
 		response.setContentType("text/plain");
 		
-		// Step 2:  Get a connection to the database
-		Connection myConn = null;
-		Statement myStmt = null;
-		ResultSet myRs = null;
-		
-		try {
-			myConn = dataSource.getConnection();
-			
-			// Step 3:  Create a SQL statements
-			String sql = "select * from escuela";
-			myStmt = myConn.createStatement();
-			
-			// Step 4:  Execute SQL query
-			myRs = myStmt.executeQuery(sql);
-			
-			// Step 5:  Process the result set
+		try (Connection myConn = dataSource.getConnection();
+			Statement myStmt = myConn.createStatement();
+			ResultSet myRs = myStmt.executeQuery("select * from escuela");
+			){
 			while (myRs.next()) {
 				String correo = myRs.getString("correo");
 				out.println(correo);
