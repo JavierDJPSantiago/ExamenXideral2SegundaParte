@@ -9,7 +9,7 @@
 </head>
 
 <%
-	// get the escuela from the request object (sent by servlet)
+	// obtener la escuela de respuesta(enviado por servlet)
 	List<Escuela> theEscuela = (List<Escuela>) request.getAttribute("ESCUELA_LIST");
 %>
 

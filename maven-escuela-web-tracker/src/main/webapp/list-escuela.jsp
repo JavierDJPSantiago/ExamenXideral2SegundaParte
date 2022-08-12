@@ -21,7 +21,7 @@
 	
 		<div id="content">
 		
-			<!-- put new button: Add Escuela -->
+			<!-- poner nuevo boton: Agregar Escuela -->
 			
 			<input type="button" value="Add Escuela" 
 				   onclick="window.location.href='add-escuela-form.jsp'; return false;"
@@ -39,13 +39,13 @@
 				
 				<c:forEach var="tempEscuela" items="${ESCUELA_LIST}">
 					
-					<!-- set up a link for each escuela -->
+					<!-- configurar un enlace para cada escuela -->
 					<c:url var="tempLink" value="EscuelaControllerServlet">
 						<c:param name="command" value="LOAD" />
 						<c:param name="escuelaId" value="${tempEscuela.id}" />
 					</c:url>
 
-					<!--  set up a link to delete a escuela -->
+					<!--  configurar un enlace para eliminar una escuela -->
 					<c:url var="deleteLink" value="EscuelaControllerServlet">
 						<c:param name="command" value="DELETE" />
 						<c:param name="escuelaId" value="${tempEscuela.id}" />
