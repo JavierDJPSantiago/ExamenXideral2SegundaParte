@@ -39,7 +39,7 @@ public class EscuelaControllerServlet extends HttpServlet {
 		try {
 			// read the "command" parameter
 			String theCommand = request.getParameter("command");
-			
+			System.out.println(theCommand);
 			// if the command is missing, then default to listing escuela
 			if (theCommand == null) {
 				theCommand = "LIST";
@@ -149,12 +149,12 @@ public class EscuelaControllerServlet extends HttpServlet {
 
 	private void listEscuela(HttpServletRequest request, HttpServletResponse response) 
 		throws Exception {
-
+		System.out.println("Entro al metodo listEscuela");
 		// get escuela from db util
 		List<Escuela> escuela = escuelaDbUtil.getEscuela();
 		
 		// add escuela to the request
-		request.setAttribute("ECUELA_LIST", escuela);
+		request.setAttribute("ESCUELA_LIST", escuela);
 				
 		// send to JSP page (view)
 		RequestDispatcher dispatcher = request.getRequestDispatcher("/list-escuela.jsp");

@@ -19,7 +19,7 @@ public class EscuelaDbUtil {
 	
 	public List<Escuela> getEscuela() throws Exception {
 		
-		List<Escuela> escuela = new ArrayList<>();
+		List<Escuela> listaDeEscuela = new ArrayList<>();
 		
 		try (Connection myConn = dataSource.getConnection();
 				Statement myStmt = myConn.createStatement();
@@ -36,10 +36,10 @@ public class EscuelaDbUtil {
 				Escuela tempEscuela = new Escuela(id, nombre, tescuela, correo);
 				
 				// add it to the list of escuela
-				escuela.add(tempEscuela);				
+				listaDeEscuela.add(tempEscuela);				
 			}
 			
-			return escuela;		
+			return listaDeEscuela;		
 		}
 				
 	}
